@@ -32,7 +32,7 @@ This will create a `components/ui` folder in the root of the project with the `b
 In your `app/page.tsx` file, import the button component and use it:
 
 ```tsx
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
 const HomePage = () => {
   return <Button>Button</Button>;
