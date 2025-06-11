@@ -106,3 +106,9 @@ npx prisma studio
 This will open a new browser window with the Prisma Studio. You can use this to view your database and make changes to it.
 
 In the next lesson, we will seed our sample data.
+
+## Run Database Seed
+
+```bash
+npx tsx ./db/seed
+```
