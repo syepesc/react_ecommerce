@@ -1,8 +1,11 @@
-import sampleData from "@/db/sample-data";
 import ProductList from "@/components/shared/product/product-list";
-const HomePage = () => {
-  console.log(sampleData);
-  return <ProductList data={sampleData.products} title="Newest Arrivals" limit={4} />;
+import { getLatestProducts } from "@/lib/actions/product.actions";
+import { LATEST_PRODUCTS_LIMIT } from "@/lib/constants";
+
+const HomePage = async () => {
+  const latestProducts = await getLatestProducts();
+
+  return <ProductList data={latestProducts} title="Newest Arrivals" limit={LATEST_PRODUCTS_LIMIT} />;
 };
 
 export default HomePage;
