@@ -2,9 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import ProductPrice from "./product-price";
+import { Product } from "@/types";
 
-// TODO: Implement product type
-const ProductCard = ({ product }: { product: any }) => {
+const ProductCard = ({ product }: { product: Product }) => {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader className="p-0 items-center">
@@ -13,7 +13,7 @@ const ProductCard = ({ product }: { product: any }) => {
         </Link>
       </CardHeader>
       <CardContent className="grid p-4 gap-4">
-        <div className="text-xs">{product.brans}</div>
+        <div className="text-xs">{product.brand}</div>
         <Link href={`/product/${product.slug}`}>
           <h2 className="text-sm font-medium">{product.name}</h2>
         </Link>
