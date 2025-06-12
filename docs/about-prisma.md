@@ -112,3 +112,53 @@ In the next lesson, we will seed our sample data.
 ```bash
 npx tsx ./db/seed
 ```
+
+## Going Serverless With Prisma
+
+Traditional databases maintain persistent TCP connections to handle requests. However, serverless environments (like Vercel) are designed to scale automatically and don’t maintain persistent connections between invocations. If you try to connect directly to a database from a serverless function, you might run into issues like:
+
+- **Connection limits**: Serverless environments can spawn many instances simultaneously, exceeding database connection limits.
+- **Cold starts**: Connections are slow to initialize in serverless environments.
+- **Incompatibility with WebSockets**: Neon uses WebSockets for serverless compatibility, while Prisma assumes a traditional TCP setup.
+
+The Neon adapter solves these problems by adapting Prisma’s behavior to Neon’s serverless architecture. It allows Prisma to manage connections using WebSockets and pooling, so that it works in a serverless context.
+
+## Needed Packages
+
+There are a few packages that we need to install to set this up:
+
+- `@neondatabase/serverless`: Provides a low-level connection interface to interact with the Neon serverless PostgreSQL database using WebSockets. That's why we're also installing the websockets package. This adapter allows us to connect directly to Neon in serverless environments, such as Vercel or Netlify, where maintaining persistent connections to a database can be challenging.
+- `@prisma/adapter-neon`: This is an adapter specifically for Prisma to ensure Prisma can operate smoothly with Neon in serverless environments. Prisma by default assumes traditional database connections (over TCP), so this adapter adapts Prisma’s behavior to Neon’s serverless infrastructure, which uses WebSockets and connection pooling.
+- `ws`: This is a WebSocket library used by the Neon adapter to establish and manage connections to the Neon serverless database.
+
+Let's install the following packages:
+
+```bash
+npm install @neondatabase/serverless @prisma/adapter-neon ws
+```
+
+There are a couple dev dependencies we need to install as well:
+
+```bash
+npm i -D @types/ws bufferutil
+```
+
+- `@types/ws`: This is the TypeScript type definitions for the ws package.
+- `bufferutil`: This is a utility package for working with buffers in Node.js.
+
+Now that we have the packages installed, we need to update our Prisma schema to use the Neon adapter. Open the `prisma/schema.prisma` file and update the provider to use the Neon adapter:
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]  👈 Add this line
+}
+```
+
+## Generate Prisma Client
+
+When we make changes like this, we need to regenerate the Prisma Client. Run the following command to generate the Prisma Client:
+
+```bash
+npx prisma generate
+```
