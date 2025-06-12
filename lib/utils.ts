@@ -7,6 +7,5 @@ export function cn(...inputs: ClassValue[]) {
 
 // Convert prisma object into a regular JS object
 export function prismaObjectToJS<T>(value: T): T {
-  console.log(value);
   return JSON.parse(JSON.stringify(value));
 }
