@@ -9,7 +9,7 @@ export const insertProductSchema = z.object({
   brand: z.string().min(3, "Brand must be at least 3 characters"),
   description: z.string().min(3, "Description must be at least 3 characters"),
   stock: z.coerce.number(),
-  price: z.string().regex(/^\d+\.\d{2}$/, "Price must have 2 decimal places"),
+  price: z.string().regex(/^\d+\.\d{2}$/, "Price must be a number with 2 decimal places"),
   isFeatured: z.boolean(),
   banner: z.string().nullable(),
 });
