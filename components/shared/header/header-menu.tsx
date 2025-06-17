@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import ThemeToggler from "./theme-toggler";
 import Link from "next/link";
-import { MenuIcon, ShoppingCart, UserIcon } from "lucide-react";
+import { MenuIcon, ShoppingCart } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import UserButton from "./user-button";
 
 const HeaderMenu = () => {
   return (
@@ -14,11 +15,7 @@ const HeaderMenu = () => {
             <ShoppingCart /> Cart
           </Link>
         </Button>
-        <Button asChild>
-          <Link href="/sign-in">
-            <UserIcon /> Sign In
-          </Link>
-        </Button>
+        <UserButton />
       </nav>
       <nav className="md:hidden">
         <Sheet>
@@ -35,11 +32,7 @@ const HeaderMenu = () => {
                 <ShoppingCart /> Cart
               </Link>
             </Button>
-            <Button asChild>
-              <Link href="/sign-in">
-                <UserIcon /> Sign In
-              </Link>
-            </Button>
+            <UserButton />
           </SheetContent>
         </Sheet>
       </nav>
