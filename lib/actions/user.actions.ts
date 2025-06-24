@@ -5,6 +5,7 @@ import { signIn, signOut } from "@/auth";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { hashSync } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
+import { formatFormError } from "../utils";
 
 // Sign in the user with credentials
 export async function signInWithCredentials(prevState: unknown, formData: FormData) {
@@ -65,7 +66,7 @@ export async function signUpWithCredentials(prevState: unknown, formData: FormDa
 
     return {
       success: false,
-      message: "Something went wrong",
+      message: formatFormError(error),
     };
   }
 }
