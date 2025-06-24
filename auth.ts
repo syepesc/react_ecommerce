@@ -22,6 +22,7 @@ export const config = {
         email: { type: "email" },
         password: { type: "password" },
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async authorize(credentials: any) {
         if (credentials === null) return null;
 
@@ -49,15 +50,43 @@ export const config = {
     }),
   ],
   callbacks: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, user, trigger, token }: any) {
       // set user id from the token
       session.user.id = token.sub;
+      session.user.role = token.role;
+      session.user.name = token.name;
 
       // If there is an update, set the user name
       if (trigger === "update") {
         session.user.name = user.name;
       }
       return session;
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async jwt({ token, user, trigger, session }: any) {
+      // Assign user fields to token
+      if (user) {
+        token.role = user.role;
+
+        // If user has no name, use email as their default name
+        if (user.name === "NO_NAME") {
+          token.name = user.email!.split("@")[0];
+
+          // Update the user in the database with the new name
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { name: token.name },
+          });
+        }
+      }
+
+      // Handle session updates (e.g., name change)
+      if (session?.user.name && trigger === "update") {
+        token.name = session.user.name;
+      }
+
+      return token;
     },
   },
 } satisfies NextAuthConfig;
