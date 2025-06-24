@@ -14,7 +14,8 @@ export async function signInWithCredentials(prevState: unknown, formData: FormDa
       password: formData.get("password"),
     });
 
-    signIn("credentials", user);
+    await signIn("credentials", user);
+
     return { success: true, message: "Signed in successfully" };
   } catch (error) {
     if (isRedirectError(error)) {
