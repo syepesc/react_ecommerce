@@ -31,3 +31,5 @@ const ProductCard = ({ product }: { product: Product }) => {
 };
 
 export default ProductCard;
+
+// TODO: Refresh in-stock/out-of-stock from product card

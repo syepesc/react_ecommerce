@@ -23,6 +23,8 @@ const calcPrice = (items: CartItem[]) => {
 };
 
 export async function addItemToCart(data: CartItem) {
+  // TODO: Reduce quantity from inventory (product table) when adding an item to the cart
+
   try {
     // Check for cart cookie
     const sessionCartId = (await cookies()).get("sessionCartId")?.value;
@@ -121,3 +123,59 @@ export async function getCart() {
     taxPrice: cart.taxPrice.toString(),
   });
 }
+
+export async function removeItemFromCart(productId: string) {
+  // TODO: Increase quantity from inventory (product table) when removing an item from the cart
+
+  try {
+    // Get session cart id
+    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
+    if (!sessionCartId) throw new Error("Cart Session not found");
+
+    // Get product
+    const product = await prisma.product.findFirst({
+      where: { id: productId },
+    });
+    if (!product) throw new Error("Product not found");
+
+    // Get user cart
+    const cart = await getCart();
+    if (!cart) throw new Error("Cart not found");
+
+    // Check if cart has item
+    const exist = (cart.items as CartItem[]).find((x) => x.productId === productId);
+    if (!exist) throw new Error("Item not found");
+
+    // Check if cart has only one item
+    if (exist.quantity === 1) {
+      // Remove item from cart
+      cart.items = (cart.items as CartItem[]).filter((x) => x.productId !== exist.productId);
+    } else {
+      // Decrease quantity of existing item
+      (cart.items as CartItem[]).find((x) => x.productId === productId)!.quantity = exist.quantity - 1;
+    }
+
+    // Update cart in database
+    await prisma.cart.update({
+      where: { id: cart.id },
+      data: {
+        items: cart.items as CartItem[],
+        ...calcPrice(cart.items as CartItem[]),
+      },
+    });
+
+    // Revalidate product page
+    revalidatePath(`/product/${product.slug}`);
+
+    return {
+      success: true,
+      message: `${product.name}  ${
+        (cart.items as CartItem[]).find((x) => x.productId === productId) ? "updated in" : "removed from"
+      } cart successfully`,
+    };
+  } catch (error) {
+    return { success: false, message: formatFormError(error) };
+  }
+}
+
+// TODO: Replace thrown errors with response that contain success, and message attributes.
