@@ -42,3 +42,4 @@ export default SignUp;
 
 // TODO: Add field errors under each field, not all of the errors concatenated at the bottom (current behavior).
 // TODO: Do not erase the form data on error, so that the user can correct the errors without losing their input.
+// TODO: Add show/hide icon for password fields.

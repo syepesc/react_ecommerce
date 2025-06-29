@@ -1,4 +1,12 @@
 import { z } from "zod";
+import { formatNumberWithDecimal } from "./utils";
+
+const currency = z
+  .string()
+  .refine(
+    (value) => /^\d+(\.\d{2})?$/.test(formatNumberWithDecimal(Number(value))),
+    "Price must have exactly two decimal places"
+  );
 
 // Schema for inserting products
 export const insertProductSchema = z.object({
@@ -9,7 +17,7 @@ export const insertProductSchema = z.object({
   brand: z.string().min(3, "Brand must be at least 3 characters"),
   description: z.string().min(3, "Description must be at least 3 characters"),
   stock: z.coerce.number(),
-  price: z.string().regex(/^\d+\.\d{2}$/, "Price must be a number with 2 decimal places"),
+  price: currency,
   isFeatured: z.boolean(),
   banner: z.string().nullable(),
 });
@@ -32,3 +40,24 @@ export const signUpFormSchema = z
     message: "Passwords must match",
     path: ["confirmPassword"],
   });
+
+//  Schema for cart item
+export const cartItemSchema = z.object({
+  productId: z.string().min(1, "Product is required"),
+  name: z.string().min(1, "Name is required"),
+  slug: z.string().min(1, "Slug is required"),
+  quantity: z.number().int().nonnegative("Quantity must be a non-negative number"),
+  image: z.string().min(1, "Image is required"),
+  price: currency,
+});
+
+//  Schema for cart
+export const insertCartSchema = z.object({
+  items: z.array(cartItemSchema),
+  itemsPrice: currency,
+  totalPrice: currency,
+  shippingPrice: currency,
+  taxPrice: currency,
+  sessionCartId: z.string().min(1, "Session cart id is required"),
+  userId: z.string().optional().nullable(),
+});

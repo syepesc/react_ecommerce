@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+// Expand tailwind classes
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -8,6 +9,12 @@ export function cn(...inputs: ClassValue[]) {
 // Convert prisma object into a regular JS object
 export function prismaObjectToJS<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
+}
+
+// Format number with decimal places
+export function formatNumberWithDecimal(num: number): string {
+  const [int, decimal] = num.toString().split(".");
+  return decimal ? `${int}.${decimal.padEnd(2, "0")}` : `${int}.00`;
 }
 
 // Format form error
@@ -26,5 +33,33 @@ export async function formatFormError(error: any) {
       // Handle other errors
       return typeof error.message === "string" ? error.message : JSON.stringify(error.message);
     }
+  }
+}
+
+// Round number to 2 decimal places
+export const round2 = (value: number | string) => {
+  if (typeof value === "number") {
+    return Math.round((value + Number.EPSILON) * 100) / 100; // avoid rounding errors
+  } else if (typeof value === "string") {
+    return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+  } else {
+    throw new Error("value is not a number nor a string");
+  }
+};
+
+// Format currency
+const CURRENCY_FORMATTER = new Intl.NumberFormat("en-US", {
+  currency: "USD",
+  style: "currency",
+  minimumFractionDigits: 2,
+});
+
+export function formatCurrency(amount: number | string | null) {
+  if (typeof amount === "number") {
+    return CURRENCY_FORMATTER.format(amount);
+  } else if (typeof amount === "string") {
+    return CURRENCY_FORMATTER.format(Number(amount));
+  } else {
+    return "NaN";
   }
 }
