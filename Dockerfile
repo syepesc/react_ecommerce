@@ -22,7 +22,8 @@ RUN apt-get update -qq && \
 
 # Install node modules
 COPY package-lock.json package.json ./
-COPY prisma .
+# Changed this line, learn more: https://github.com/prisma/prisma/discussions/22519#discussioncomment-8160509
+COPY prisma ./prisma/
 RUN npm ci --include=dev
 
 # Generate Prisma Client
