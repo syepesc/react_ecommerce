@@ -9,7 +9,6 @@ const currency = z
     "Price must have exactly two decimal places"
   );
 
-// Schema for inserting products
 export const insertProductSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   slug: z.string().min(3, "Slug must be at least 3 characters"),
@@ -23,13 +22,11 @@ export const insertProductSchema = z.object({
   banner: z.string().nullable(),
 });
 
-// Schema for signing users in
 export const signInFormSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must have at least 6 characters"),
 });
 
-// Schema for signing up users
 export const signUpFormSchema = z
   .object({
     name: z.string().min(3, "Name must be at least 3 characters"),
@@ -42,7 +39,6 @@ export const signUpFormSchema = z
     path: ["confirmPassword"],
   });
 
-//  Schema for cart item
 export const cartItemSchema = z.object({
   productId: z.string().min(1, "Product is required"),
   name: z.string().min(1, "Name is required"),
@@ -52,7 +48,6 @@ export const cartItemSchema = z.object({
   price: currency,
 });
 
-// Schema for cart
 export const insertCartSchema = z.object({
   items: z.array(cartItemSchema),
   itemsPrice: currency,
@@ -63,7 +58,6 @@ export const insertCartSchema = z.object({
   userId: z.string().optional().nullable(),
 });
 
-// Schema for shipping address
 export const shippingAddressSchema = z.object({
   fullName: z.string().min(3, "Name must be at least 3 characters"),
   streetAddress: z.string().min(3, "Address must be at least 3 characters"),
@@ -74,7 +68,6 @@ export const shippingAddressSchema = z.object({
   lng: z.number().optional(),
 });
 
-// Schema for payment method
 export const paymentMethodSchema = z
   .object({
     type: z.string().min(1, "Payment method is required"),
@@ -84,7 +77,6 @@ export const paymentMethodSchema = z
     message: "Invalid payment method",
   });
 
-// Schema for inserting orders
 export const insertOrderSchema = z.object({
   userId: z.string().min(1, "User is required"),
   itemsPrice: currency,
@@ -97,7 +89,6 @@ export const insertOrderSchema = z.object({
   shippingAddress: shippingAddressSchema,
 });
 
-// Schema for order item
 export const insertOrderItemSchema = z.object({
   productId: z.string(),
   slug: z.string(),
@@ -105,4 +96,11 @@ export const insertOrderItemSchema = z.object({
   name: z.string(),
   price: currency,
   quantity: z.number(),
+});
+
+export const paymentResultSchema = z.object({
+  id: z.string(),
+  status: z.string(),
+  email_address: z.string(),
+  pricePaid: z.string(),
 });
