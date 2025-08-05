@@ -118,11 +118,7 @@ export async function createPayPalOrder(orderId: string) {
 export async function approvePayPalOrder(orderId: string, data: { orderID: string }) {
   try {
     // Find the order in the database
-    const order = await prisma.order.findFirst({
-      where: {
-        id: orderId,
-      },
-    });
+    const order = await prisma.order.findFirst({ where: { id: orderId } });
     if (!order) throw new Error("Order not found");
 
     // Check if the order is already paid
@@ -148,7 +144,7 @@ export async function approvePayPalOrder(orderId: string, data: { orderID: strin
 
     return {
       success: true,
-      message: "Your order has been successfully paid by PayPal",
+      message: "Your order has been successfully paid using PayPal",
     };
   } catch (err) {
     return { success: false, message: formatFormError(err) };
@@ -158,12 +154,8 @@ export async function approvePayPalOrder(orderId: string, data: { orderID: strin
 async function updateOrderToPaid({ orderId, paymentResult }: { orderId: string; paymentResult?: PaymentResult }) {
   // Find the order in the database and include the order items
   const order = await prisma.order.findFirst({
-    where: {
-      id: orderId,
-    },
-    include: {
-      orderItems: true,
-    },
+    where: { id: orderId },
+    include: { orderItems: true },
   });
 
   if (!order) throw new Error("Order not found");
