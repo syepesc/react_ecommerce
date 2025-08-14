@@ -41,7 +41,7 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
                     <TableCell>
                       <Link href={`/product/${item.slug}`} className="flex items-center">
                         <Image src={item.image} alt={item.name} width={50} height={50}></Image>
-                        <span className="px-2">{item.name}</span>
+                        <span className="px-2 text-wrap">{item.name}</span>
                       </Link>
                     </TableCell>
                     <TableCell className="flex-center gap-2">
